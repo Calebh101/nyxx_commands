@@ -121,6 +121,12 @@ class EventManager {
         commands.contextManager.createButtonComponentContext,
       );
 
+  Map<Snowflake, DateTime> recentCommands = {};
+
+  void filterRecentCommands() {
+    recentCommands.removeWhere((k, v) => DateTime.now().difference(v).inMilliseconds > 1000);
+  }
+
   /// The handler for select menu [MessageComponentInteraction]s.
   ///
   /// Attach to [NyxxGateway.onMessageComponentInteraction] where the component is a select menu.
@@ -132,8 +138,8 @@ class EventManager {
   /// A handler for [MessageCreateEvent]s.
   ///
   /// Attach to [NyxxGateway.onMessageCreate].
-  Future<void> processMessageCreateEvent(MessageCreateEvent event) async {
-    if (commands.prefix == null) return;
+  Future<ChatCommand?> processMessageCreateEvent(MessageCreateEvent event) async {
+    if (commands.prefix == null) return null;
 
     final message = event.message;
 
@@ -146,17 +152,25 @@ class EventManager {
       ChatContext context = await commands.contextManager.createMessageChatContext(message, view, matchedPrefix.group(0)!);
 
       if (message.author is User && (message.author as User).isBot && !context.command.resolvedOptions.acceptBotCommands!) {
-        return;
+        return null;
       }
 
       if (message.author.id == await event.gateway.client.users.fetchCurrentUser() && !context.command.resolvedOptions.acceptSelfCommands!) {
-        return;
+        return null;
       }
 
       logger.fine('Invoking command ${context.command.name} from message $message');
 
+      filterRecentCommands();
+      if (recentCommands.containsKey(event.message.author.id)) return null;
+      recentCommands[event.message.author.id] = DateTime.now();
+
       await context.command.invoke(context);
+
+      return context.command;
     }
+
+    return null;
   }
 
   /// A handler for generic interaction contexts.
