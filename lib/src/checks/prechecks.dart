@@ -25,8 +25,8 @@ class Precheck {
 }
 
 extension GetData on DispatchEvent {
-  T getData<T>(T Function(MessageComponentInteraction event) onMessageComponentInteraction, T Function(MessageCreateEvent event) onMessageCreate, T Function(InteractionCreateEvent<ApplicationCommandInteraction> event) onApplicationCommandInteraction, T Function(InteractionCreateEvent<ApplicationCommandAutocompleteInteraction> event) onApplicationCommandAutocompleteInteraction) {
-    if (this is MessageComponentInteraction) return onMessageComponentInteraction.call(this as MessageComponentInteraction);
+  T getData<T>(T Function(InteractionCreateEvent<MessageComponentInteraction> event) onMessageComponentInteraction, T Function(MessageCreateEvent event) onMessageCreate, T Function(InteractionCreateEvent<ApplicationCommandInteraction> event) onApplicationCommandInteraction, T Function(InteractionCreateEvent<ApplicationCommandAutocompleteInteraction> event) onApplicationCommandAutocompleteInteraction) {
+    if (this is InteractionCreateEvent<MessageComponentInteraction>) return onMessageComponentInteraction.call(this as InteractionCreateEvent<MessageComponentInteraction>);
     if (this is MessageCreateEvent) return onMessageCreate.call(this as MessageCreateEvent);
     if (this is InteractionCreateEvent<ApplicationCommandInteraction>) return onApplicationCommandInteraction.call(this as InteractionCreateEvent<ApplicationCommandInteraction>);
     if (this is InteractionCreateEvent<ApplicationCommandAutocompleteInteraction>) return onApplicationCommandAutocompleteInteraction.call(this as InteractionCreateEvent<ApplicationCommandAutocompleteInteraction>);
