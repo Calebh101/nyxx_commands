@@ -172,7 +172,7 @@ class CommandsPlugin extends NyxxPlugin<NyxxGateway> implements CommandGroup<Com
     client.onMessageComponentInteraction.where((event) => event.interaction.data.type == MessageComponentType.button).listen(
       (event) async {
         final interaction = event.interaction;
-        if (await fire(event) == false) return;
+        if (await firePrechecks(event) == false) return;
 
         try {
           await eventManager.processButtonInteraction(interaction);
@@ -187,7 +187,7 @@ class CommandsPlugin extends NyxxPlugin<NyxxGateway> implements CommandGroup<Com
         .listen(
       (event) async {
         final interaction = event.interaction;
-        if (await fire(event) == false) return;
+        if (await firePrechecks(event) == false) return;
 
         try {
           await eventManager.processSelectMenuInteraction(interaction);
@@ -199,7 +199,7 @@ class CommandsPlugin extends NyxxPlugin<NyxxGateway> implements CommandGroup<Com
 
     client.onMessageCreate.listen((event) async {
       try {
-        if (await fire(event) == false) return;
+        if (await firePrechecks(event) == false) return;
         await eventManager.processMessageCreateEvent(event);
       } on CommandsException catch (e) {
         _onCommandErrorController.add(e);
@@ -210,7 +210,7 @@ class CommandsPlugin extends NyxxPlugin<NyxxGateway> implements CommandGroup<Com
       (event) async {
         final interaction = event.interaction;
         try {
-          if (await fire(event) == false) return;
+          if (await firePrechecks(event) == false) return;
 
           final applicationCommand = registeredCommands.singleWhere(
             (command) => command.id == interaction.data.id,
@@ -244,7 +244,7 @@ class CommandsPlugin extends NyxxPlugin<NyxxGateway> implements CommandGroup<Com
     client.onApplicationCommandAutocompleteInteraction.listen((event) async {
       final interaction = event.interaction;
       try {
-        if (await fire(event) == false) return;
+        if (await firePrechecks(event) == false) return;
 
         final applicationCommand = registeredCommands.singleWhere(
           (command) => command.id == interaction.data.id,
