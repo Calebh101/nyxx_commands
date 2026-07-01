@@ -153,6 +153,7 @@ Future<T> parse<T>(
 
   try {
     T? parsed = await converter.convert(toParse, context);
+    print("T=$T, type=$expectedType, nullable=${expectedType.isNullable}, word=${toParse.copy().getQuotedWord().toLowerCase()}, success=${toParse.copy().getQuotedWord().toLowerCase() == "null"}");
 
     if (expectedType.isNullable && toParse.copy().getQuotedWord().toLowerCase() == "null") {
       return null as T;
