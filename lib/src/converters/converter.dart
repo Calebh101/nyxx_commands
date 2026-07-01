@@ -154,7 +154,7 @@ Future<T> parse<T>(
   StringView originalInput = toParse.copy();
 
   try {
-    bool nullFound = acceptNull &&  expectedType.isNullable && toParse.copy().getQuotedWord().toLowerCase() == "null";
+    bool nullFound = acceptNull && toParse.copy().getQuotedWord().toLowerCase() == "null";
     T? parsed = await converter.convert(toParse, context);
 
     stderr.writeln("T=$T, type=$expectedType, nullable=${expectedType.isNullable}, acceptNull=$acceptNull, success=$nullFound");
