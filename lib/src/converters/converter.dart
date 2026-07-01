@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:nyxx/nyxx.dart';
 
@@ -143,6 +144,7 @@ Future<T> parse<T>(
   StringView toParse,
   RuntimeType<T> expectedType, {
   Converter<T>? converterOverride,
+  bool acceptNull = true,
 }) async {
   Converter<T>? converter = converterOverride ?? commands.getConverter(expectedType);
   if (converter == null) {
@@ -152,10 +154,12 @@ Future<T> parse<T>(
   StringView originalInput = toParse.copy();
 
   try {
+    bool nullFound = acceptNull &&  expectedType.isNullable && toParse.copy().getQuotedWord().toLowerCase() == "null";
     T? parsed = await converter.convert(toParse, context);
-    print("T=$T, type=$expectedType, nullable=${expectedType.isNullable}, word=${toParse.copy().getQuotedWord().toLowerCase()}, success=${toParse.copy().getQuotedWord().toLowerCase() == "null"}");
 
-    if (expectedType.isNullable && toParse.copy().getQuotedWord().toLowerCase() == "null") {
+    stderr.writeln("T=$T, type=$expectedType, nullable=${expectedType.isNullable}, word=${toParse.copy().getQuotedWord().toLowerCase()}, acceptNull=$acceptNull, success=$nullFound");
+
+    if (nullFound) {
       return null as T;
     }
 
