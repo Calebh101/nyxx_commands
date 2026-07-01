@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:nyxx/nyxx.dart';
 
@@ -156,8 +155,6 @@ Future<T> parse<T>(
   try {
     bool nullFound = acceptNull && toParse.copy().getQuotedWord().toLowerCase() == "null";
     T? parsed = await converter.convert(toParse, context);
-
-    stderr.writeln("T=$T, type=$expectedType, nullable=${expectedType.isNullable}, acceptNull=$acceptNull, success=$nullFound");
 
     if (nullFound) {
       return null as T;
