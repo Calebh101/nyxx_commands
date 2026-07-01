@@ -154,11 +154,11 @@ Future<T> parse<T>(
   try {
     T? parsed = await converter.convert(toParse, context);
 
-    if (parsed == null) {
-      if (expectedType.isNullable && toParse.copy().getQuotedWord().toLowerCase() == "null") {
-        return null as T;
-      }
+    if (expectedType.isNullable && toParse.copy().getQuotedWord().toLowerCase() == "null") {
+      return null as T;
+    }
 
+    if (parsed == null) {
       throw ConverterFailedException(converter, originalInput, context);
     }
 
