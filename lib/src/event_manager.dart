@@ -26,7 +26,7 @@ class EventManager {
 
   final Map<RuntimeType<dynamic>, Map<ComponentId, Completer<dynamic /* covariant IComponentContext */ >>> _listeners = {};
 
-  static final List<Snowflake> allowedBots = [];
+  static List<Snowflake> allowedBots = [];
 
   /// Create a new [EventManager].
   EventManager(this.commands);
