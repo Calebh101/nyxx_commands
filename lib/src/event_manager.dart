@@ -26,6 +26,8 @@ class EventManager {
 
   final Map<RuntimeType<dynamic>, Map<ComponentId, Completer<dynamic /* covariant IComponentContext */ >>> _listeners = {};
 
+  static final List<Snowflake> allowedBots = [];
+
   /// Create a new [EventManager].
   EventManager(this.commands);
 
@@ -151,11 +153,11 @@ class EventManager {
     if (matchedPrefix != null) {
       ChatContext context = await commands.contextManager.createMessageChatContext(message, view, matchedPrefix.group(0)!);
 
-      if (message.author is User && (message.author as User).isBot && !context.command.resolvedOptions.acceptBotCommands!) {
+      if (message.author is User && (message.author as User).isBot && !allowedBots.contains(message.author.id) && !context.command.resolvedOptions.acceptBotCommands!) {
         return null;
       }
 
-      if (message.author.id == await event.gateway.client.users.fetchCurrentUser() && !context.command.resolvedOptions.acceptSelfCommands!) {
+      if (message.author.id == await event.gateway.client.users.fetchCurrentUser() && !allowedBots.contains(message.author.id) && !context.command.resolvedOptions.acceptSelfCommands!) {
         return null;
       }
 
